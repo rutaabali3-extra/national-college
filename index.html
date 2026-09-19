@@ -2561,6 +2561,14 @@
       saveTheme();
       updateBadges();
 
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+          state.theme = state.theme === 'dark' ? 'light' : 'dark';
+          saveTheme();
+        });
+      }
+
       const handleTabSwitch = (tab) => {
         state.currentTab = tab;
         document.querySelectorAll('.nav-item-btn, .bottom-nav-item').forEach(el => {
