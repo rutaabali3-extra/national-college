@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Upscale Comparison | Original vs 2K vs 4K</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #182234;
+      --border-color: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-green: #22c55e;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.4) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 32px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(90deg, #38bdf8, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    /* Section Styling */
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-title h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Grid comparisons */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #475569;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(30, 41, 59, 0.6);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-original {
+      background: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+      border: 1px solid #64748b;
+    }
+
+    .badge-2k {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid #0284c7;
+    }
+
+    .badge-4k {
+      background: rgba(168, 85, 247, 0.2);
+      color: #c084fc;
+      border: 1px solid #9333ea;
+    }
+
+    .card-body {
+      padding: 12px;
+      background: #0b1120;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+    }
+
+    .card-body img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      display: block;
+      object-fit: contain;
+      max-height: 520px;
+      background: #000;
+      cursor: zoom-in;
+    }
+
+    .card-body video {
+      width: 100%;
+      height: auto;
+      max-height: 520px;
+      border-radius: 6px;
+      background: #000;
+    }
+
+    .card-footer {
+      padding: 14px 20px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-label {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Master video controls */
+    .video-controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn:hover {
+      background: #475569;
+    }
+
+    .btn-primary {
+      background: #0284c7;
+    }
+
+    .btn-primary:hover {
+      background: #0369a1;
+    }
+
+    /* Interactive Comparison Slider */
+    .slider-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .select-dropdown {
+      background: #334155;
+      color: #fff;
+      border: 1px solid var(--border-color);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .compare-container {
+      position: relative;
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      user-select: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      aspect-ratio: 4 / 3;
+      background: #000;
+    }
+
+    .compare-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .compare-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      border-right: 3px solid #38bdf8;
+    }
+
+    .compare-overlay img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: auto;
+      max-width: none;
+    }
+
+    .slider-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px;
+      height: 42px;
+      background: #38bdf8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f172a;
+      font-weight: 900;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+      cursor: ew-resize;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .slider-tag {
+      position: absolute;
+      bottom: 16px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      z-index: 5;
+      backdrop-filter: blur(8px);
+    }
+
+    .slider-tag-left {
+      left: 16px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      color: #38bdf8;
+    }
+
+    .slider-tag-right {
+      right: 16px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      color: #c084fc;
+    }
+
+    /* GitHub Impact Section */
+    .github-matrix {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    .github-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.95rem;
+    }
+
+    .github-table th, .github-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .github-table th {
+      background: rgba(30, 41, 59, 0.6);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .status-good {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--accent-green);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .status-warn {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--accent-amber);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .status-alert {
+      background: rgba(244, 63, 94, 0.2);
+      color: var(--accent-rose);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+
+    /* Lightbox Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal img {
+      max-width: 95%;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 0;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <h1>National College &bull; Media Upscale Analysis</h1>
+    <p>Compare resolution quality, file size trade-offs, and GitHub repository compatibility across <strong>Original</strong>, <strong>2K</strong>, and <strong>4K</strong> media.</p>
+  </header>
+
+  <!-- 1. Interactive Split Slider -->
+  <div class="slider-section">
+    <div class="slider-header">
+      <div>
+        <h2 style="font-size: 1.3rem;">Interactive Image Split Comparison</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Drag the divider left/right to compare detail and edge clarity in real-time.</p>
+      </div>
+      <div>
+        <label for="compareMode" style="font-size: 0.85rem; color: var(--text-secondary); margin-right: 6px;">Compare:</label>
+        <select id="compareMode" class="select-dropdown" onchange="updateCompareMode()">
+          <option value="orig-2k">Original vs 2K</option>
+          <option value="orig-4k" selected>Original vs 4K</option>
+          <option value="2k-4k">2K vs 4K</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="compare-container" id="compareBox">
+      <!-- Right image (base) -->
+      <img src="sample_image_after_4K.jpeg" alt="After" class="compare-image" id="baseImg" />
+      <span class="slider-tag slider-tag-right" id="labelRight">4K (3840 x 2880)</span>
+
+      <!-- Left image (overlay) -->
+      <div class="compare-overlay" id="overlayBox">
+        <img src="sample_image_before.jpeg" alt="Before" id="overlayImg" />
+      </div>
+      <span class="slider-tag slider-tag-left" id="labelLeft">Original (1280 x 960)</span>
+
+      <!-- Slider divider handle -->
+      <div class="slider-handle" id="sliderHandle">&harr;</div>
+    </div>
+  </div>
+
+  <!-- 2. Side-by-Side Images -->
+  <div class="section-title">
+    <h2><span>&#128247;</span> Image Comparison (Click any image to enlarge)</h2>
+  </div>
+
+  <div class="compare-grid">
+    <!-- Original Image -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">&#128247; Original</div>
+        <span class="badge badge-original">Baseline</span>
+      </div>
+      <div class="card-body">
+        <img src="sample_image_before.jpeg" alt="Original Image" onclick="openModal(this.src, 'Original Image (1280 x 960)')" />
+      </div>
+      <div class="card-footer">
+        <div class="meta-item">
+          <span class="meta-label">Resolution</span>
+          <span class="meta-value">1280 &times; 960 px</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">File Size</span>
+          <span class="meta-value">220.4 KB</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Aspect Ratio</span>
+          <span class="meta-value">4 : 3</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Megapixels</span>
+          <span class="meta-value">1.23 MP</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2K Image -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">&#128247; 2K Upscaled</div>
+        <span class="badge badge-2k">2K (1440p)</span>
+      </div>
+      <div class="card-body">
+        <img src="sample_image_after_2K.jpeg" alt="2K Upscaled Image" onclick="openModal(this.src, '2K Upscaled Image (1920 x 1440)')" />
+      </div>
+      <div class="card-footer">
+        <div class="meta-item">
+          <span class="meta-label">Resolution</span>
+          <span class="meta-value">1920 &times; 1440 px</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">File Size</span>
+          <span class="meta-value">672.9 KB (3x)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Aspect Ratio</span>
+          <span class="meta-value">4 : 3</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Megapixels</span>
+          <span class="meta-value">2.76 MP</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4K Image -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">&#128247; 4K Upscaled</div>
+        <span class="badge badge-4k">4K (2160p)</span>
+      </div>
+      <div class="card-body">
+        <img src="sample_image_after_4K.jpeg" alt="4K Upscaled Image" onclick="openModal(this.src, '4K Upscaled Image (3840 x 2880)')" />
+      </div>
+      <div class="card-footer">
+        <div class="meta-item">
+          <span class="meta-label">Resolution</span>
+          <span class="meta-value">3840 &times; 2880 px</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">File Size</span>
+          <span class="meta-value">1.67 MB (7.5x)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Aspect Ratio</span>
+          <span class="meta-value">4 : 3</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Megapixels</span>
+          <span class="meta-value">11.06 MP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Side-by-Side Videos -->
+  <div class="section-title">
+    <h2><span>&#127916;</span> Video Comparison</h2>
+  </div>
+
+  <div class="video-controls-bar">
+    <span style="font-weight: 600; font-size: 0.9rem; margin-right: 4px;">Synchronized Video Controls:</span>
+    <button class="btn btn-primary" onclick="playAllVideos()">&#9658; Play All</button>
+    <button class="btn" onclick="pauseAllVideos()">&#10074;&#10074; Pause All</button>
+    <button class="btn" onclick="restartAllVideos()">&#8634; Restart All</button>
+    <button class="btn" onclick="toggleMuteAll()" id="muteBtn">&#128266; Mute / Unmute</button>
+  </div>
+
+  <div class="compare-grid">
+    <!-- Original Video -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">&#127916; Original</div>
+        <span class="badge badge-original">Baseline</span>
+      </div>
+      <div class="card-body">
+        <video id="vidOrig" controls playsinline preload="metadata">
+          <source src="sample_video_before.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="card-footer">
+        <div class="meta-item">
+          <span class="meta-label">Resolution</span>
+          <span class="meta-value">464 &times; 832 px</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">File Size</span>
+          <span class="meta-value">1.45 MB</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Duration</span>
+          <span class="meta-value">8.75s</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Bitrate</span>
+          <span class="meta-value">~1,318 kbps</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2K Video -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">&#127916; 2K Upscaled</div>
+        <span class="badge badge-2k">2K (1440p)</span>
+      </div>
+      <div class="card-body">
+        <video id="vid2k" controls playsinline preload="metadata">
+          <source src="sample_video_after_2K.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="card-footer">
+        <div class="meta-item">
+          <span class="meta-label">Resolution</span>
+          <span class="meta-value">804 &times; 1440 px</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">File Size</span>
+          <span class="meta-value">4.80 MB (3.3x)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Duration</span>
+          <span class="meta-value">8.75s</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Bitrate</span>
+          <span class="meta-value">~4,500 kbps</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4K Video -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">&#127916; 4K Upscaled</div>
+        <span class="badge badge-4k">4K (2160p)</span>
+      </div>
+      <div class="card-body">
+        <video id="vid4k" controls playsinline preload="metadata">
+          <source src="sample_video_after_4K.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="card-footer">
+        <div class="meta-item">
+          <span class="meta-label">Resolution</span>
+          <span class="meta-value">1206 &times; 2160 px</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">File Size</span>
+          <span class="meta-value">8.82 MB (6.1x)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Duration</span>
+          <span class="meta-value">8.75s</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Bitrate</span>
+          <span class="meta-value">~8,486 kbps</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. GitHub & Storage Impact Analysis -->
+  <div class="github-matrix">
+    <h2 style="font-size: 1.3rem; margin-bottom: 8px;">&#9881; GitHub Storage & Repository Impact Matrix</h2>
+    <p style="color: var(--text-secondary); font-size: 0.9rem;">Evaluation of pushing all 425 media files (353 images + 72 videos) to GitHub under each resolution profile:</p>
+
+    <div style="overflow-x: auto;">
+      <table class="github-table">
+        <thead>
+          <tr>
+            <th>Profile</th>
+            <th>Total Estimated Size</th>
+            <th>Largest Single File</th>
+            <th>GitHub 1 GB Recommended Limit</th>
+            <th>GitHub 50 MB / 100 MB Limit</th>
+            <th>Status for GitHub</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Original (Current)</strong></td>
+            <td><strong>234.3 MB</strong></td>
+            <td>8.85 MB</td>
+            <td><span class="status-pill status-good">&#10004; Well Under (23%)</span></td>
+            <td><span class="status-pill status-good">&#10004; Pass (< 10 MB)</span></td>
+            <td><span class="status-pill status-good">Optimal</span></td>
+          </tr>
+          <tr>
+            <td><strong>2K Upscaled (1440p)</strong></td>
+            <td><strong>~700 MB &ndash; 750 MB</strong></td>
+            <td>~28 MB</td>
+            <td><span class="status-pill status-good">&#10004; Safe (< 1 GB)</span></td>
+            <td><span class="status-pill status-good">&#10004; Pass (< 50 MB)</span></td>
+            <td><span class="status-pill status-good">Recommended for High-Res</span></td>
+          </tr>
+          <tr>
+            <td><strong>4K Upscaled (2160p)</strong></td>
+            <td><strong>~1.5 GB &ndash; 2.3 GB</strong></td>
+            <td><strong>~55 MB &ndash; 65 MB</strong></td>
+            <td><span class="status-pill status-warn">&#9888; Exceeds 1 GB Limit</span></td>
+            <td><span class="status-pill status-alert">&#9888; Triggers >50 MB Warning</span></td>
+            <td><span class="status-pill status-alert">Not Recommended for Git</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>National College Media Analysis &bull; Generated locally with Python &amp; FFmpeg</p>
+  </footer>
+</div>
+
+<!-- Lightbox Modal -->
+<div class="modal" id="imageModal" onclick="closeModal()">
+  <span class="modal-close">&times;</span>
+  <img id="modalImg" src="" alt="Enlarged preview" />
+</div>
+
+<script>
+  // Interactive Split Slider Logic
+  const compareBox = document.getElementById('compareBox');
+  const overlayBox = document.getElementById('overlayBox');
+  const overlayImg = document.getElementById('overlayImg');
+  const baseImg = document.getElementById('baseImg');
+  const sliderHandle = document.getElementById('sliderHandle');
+  const labelLeft = document.getElementById('labelLeft');
+  const labelRight = document.getElementById('labelRight');
+
+  let isDragging = false;
+
+  function updateOverlayWidth(xPos) {
+    const rect = compareBox.getBoundingClientRect();
+    let offsetX = xPos - rect.left;
+    if (offsetX < 0) offsetX = 0;
+    if (offsetX > rect.width) offsetX = rect.width;
+
+    const percent = (offsetX / rect.width) * 100;
+    overlayBox.style.width = percent + '%';
+    sliderHandle.style.left = percent + '%';
+
+    // Keep overlay image aligned exactly with base image
+    overlayImg.style.width = rect.width + 'px';
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    updateOverlayWidth(clientX);
+  }
+
+  compareBox.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    updateOverlayWidth(e.clientX);
+  });
+  window.addEventListener('mouseup', () => { isDragging = false; });
+  window.addEventListener('mousemove', onPointerMove);
+
+  compareBox.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    updateOverlayWidth(e.touches[0].clientX);
+  });
+  window.addEventListener('touchend', () => { isDragging = false; });
+  window.addEventListener('touchmove', onPointerMove);
+
+  window.addEventListener('resize', () => {
+    const rect = compareBox.getBoundingClientRect();
+    overlayImg.style.width = rect.width + 'px';
+  });
+
+  function updateCompareMode() {
+    const mode = document.getElementById('compareMode').value;
+    if (mode === 'orig-2k') {
+      overlayImg.src = 'sample_image_before.jpeg';
+      baseImg.src = 'sample_image_after_2K.jpeg';
+      labelLeft.innerText = 'Original (1280 x 960)';
+      labelRight.innerText = '2K (1920 x 1440)';
+    } else if (mode === 'orig-4k') {
+      overlayImg.src = 'sample_image_before.jpeg';
+      baseImg.src = 'sample_image_after_4K.jpeg';
+      labelLeft.innerText = 'Original (1280 x 960)';
+      labelRight.innerText = '4K (3840 x 2880)';
+    } else if (mode === '2k-4k') {
+      overlayImg.src = 'sample_image_after_2K.jpeg';
+      baseImg.src = 'sample_image_after_4K.jpeg';
+      labelLeft.innerText = '2K (1920 x 1440)';
+      labelRight.innerText = '4K (3840 x 2880)';
+    }
+  }
+
+  // Synchronized Video Controls
+  const videos = [
+    document.getElementById('vidOrig'),
+    document.getElementById('vid2k'),
+    document.getElementById('vid4k')
+  ];
+
+  function playAllVideos() {
+    videos.forEach(v => {
+      v.play().catch(() => {});
+    });
+  }
+
+  function pauseAllVideos() {
+    videos.forEach(v => v.pause());
+  }
+
+  function restartAllVideos() {
+    videos.forEach(v => {
+      v.currentTime = 0;
+      v.play().catch(() => {});
+    });
+  }
+
+  let isMuted = false;
+  function toggleMuteAll() {
+    isMuted = !isMuted;
+    videos.forEach(v => { v.muted = isMuted; });
+    document.getElementById('muteBtn').innerHTML = isMuted ? '&#128263; Unmute All' : '&#128266; Mute All';
+  }
+
+  // Synchronize seeking across all 3 videos
+  videos.forEach(sourceVideo => {
+    sourceVideo.addEventListener('seeked', () => {
+      videos.forEach(targetVideo => {
+        if (targetVideo !== sourceVideo && Math.abs(targetVideo.currentTime - sourceVideo.currentTime) > 0.2) {
+          targetVideo.currentTime = sourceVideo.currentTime;
+        }
+      });
+    });
+  });
+
+  // Lightbox Modal
+  function openModal(src, title) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    modal.style.display = 'flex';
+    modalImg.src = src;
+  }
+
+  function closeModal() {
+    document.getElementById('imageModal').style.display = 'none';
+  }
+
+  // Initialize
+  window.addEventListener('load', () => {
+    const rect = compareBox.getBoundingClientRect();
+    overlayImg.style.width = rect.width + 'px';
+  });
+</script>
+
+</body>
+</html>
